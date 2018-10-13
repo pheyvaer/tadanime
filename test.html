@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Title</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="./js/ldf-client-browser.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <button id="login-btn" type="button">Login</button>
+                <button id="logout-btn" type="button">Logout</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-sm">
+                list of anime
+                <table id="anime-table">
+                    <tbody id="anime-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="col-sm">
+                <div id="anime-details"></div>
+
+                <div>
+                    <div class="radio">
+                        <label><input id='rating-no' type="radio" name="optradio" checked>No rating</label>
+                    </div>
+                    <div class="radio">
+                        <label><input id='rating-1' type="radio" name="optradio">Bad</label>
+                    </div>
+                    <div class="radio">
+                        <label><input id='rating-2' type="radio" name="optradio">Meh</label>
+                    </div>
+                    <div class="radio">
+                        <label><input id='rating-3' type="radio" name="optradio">Ok</label>
+                    </div>
+                    <div class="radio">
+                        <label><input id='rating-4' type="radio" name="optradio">Good</label>
+                    </div>
+                    <div class="radio">
+                        <label><input id='rating-5' type="radio" name="optradio">Great</label>
+                    </div>
+                </div>
+
+                <div>
+                    <button id="save-btn">Save!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="./js/n3-browser.min.js"></script>
+    <script src="https://solid.community/common/js/solid-auth-client.bundle.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
