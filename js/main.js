@@ -4,6 +4,8 @@
  */
 
 const namedNode = N3.DataFactory.namedNode;
+const podURL = 'https://ph_test.solid.community';
+const dataURL = podURL + '/public/data.ttl';
 
 solid.auth.trackSession(session => {
   const loggedIn = !!session;
@@ -18,6 +20,8 @@ $('#login-btn').click(() => {
 $('#all-user-anime-btn').click(() => {
   fetchAllAnimeFromUser();
 });
+
+$("input[name='optradio']").click(saveRatingOfCurrentAnime);
 
 let counter = 0;
 const anime = {};
@@ -78,23 +82,58 @@ async function showInfo(id) {
   `;
   detailsDiv.innerHTML = str;
 
-  const rating = await getRatingOfUserForAnime(animeDetails.url);
+  if (animeDetails.rating === undefined) {
+    animeDetails.rating = await getRatingOfUserForAnime(animeDetails.url);
+  }
 
   let ratingID = '#rating-no';
 
-  if (rating !== null) {
-    ratingID = '#rating-' + rating;
+  if (animeDetails.rating !== null) {
+    ratingID = '#rating-' + animeDetails.rating;
   }
 
   $(ratingID).prop('checked', true);
 }
 
-function getRatingForAnime(url) {
-  return 1;
-}
-
-function saveRatingOfCurrentAnime() {
+async function saveRatingOfCurrentAnime() {
+  const rating = ratingsMap[this.id]*2;
   const animeURL = anime[currentAnimeID].url;
+  const ratingURL = (await getRatingURLForAnime(animeURL)).value;
+
+  if (ratingURL) {
+    //we update the rating
+
+    const updateQuery = `
+    DELETE DATA
+    { 
+      <${ratingURL}> <http://schema.org/ratingValue> ?p.
+    } WHERE {<${ratingURL}> <http://schema.org/ratingValue> ?p.}
+    
+    INSERT DATA
+    { 
+      <${ratingURL}> <http://schema.org/ratingValue> "${rating}".
+    }
+    `;
+
+    console.log(updateQuery);
+
+    solid.auth.fetch(dataURL, {
+      method: 'PATCH',
+      body: updateQuery,
+      headers: {
+        'Content-Type': 'application/sparql-update'
+      }
+    })
+      .then(res => res.text())
+      .then(body => {
+        console.log(body);
+      });
+
+  } else {
+    //need new action, review and rating objects
+  }
+
+  console.log(`${animeURL} => ${rating}`);
 
   //get the review
   //if no review create one
@@ -105,17 +144,13 @@ function saveRatingOfCurrentAnime() {
   //add or update rating value
 }
 
-function getCurrentRating() {
-  return ratingsMap[$("input[name=optradio]:checked").attr('id')];
-}
-
 function getUserDataInStore() {
   const deferred = Q.defer();
 
   if (userDataStore) {
     deferred.resolve(userDataStore);
   } else {
-    solid.auth.fetch('https://ph_test.solid.community/public/data.ttl')
+    solid.auth.fetch(dataURL)
       .then(res => res.text())
       .then(body => {
         userDataStore = N3.Store();
@@ -138,35 +173,67 @@ function getUserDataInStore() {
 
 function getRatingOfUserForAnime(animeURL) {
   const deferred = Q.defer();
-  console.log(animeURL);
 
   getUserDataInStore().then(store => {
-    const actions = store.getQuads(null, null, namedNode(animeURL)).map(a => a.subject);
-    let ratingValue = null;
-
-    if (actions.length > 0) {
-      const reviews = store.getQuads(actions[0], 'http://schema.org/review', null).map(a => a.object);
-
-      if (reviews.length > 0) {
-        const ratings = store.getQuads(reviews[0], 'http://schema.org/starRating', null).map(a => a.object);
-
-        if (ratings.length > 0) {
-          const ratingValues = store.getQuads(ratings[0], 'http://schema.org/ratingValue', null).map(a => a.object.value);
-
-          if (ratingValues.length > 0) {
-            ratingValue = ratingValues[0];
-          }
-        }
+    const source = {
+      match: function(s, p, o, g) {
+        return streamifyArray(store.getQuads(s, p, o, g));
       }
-    }
+    };
 
-    let result = parseInt(ratingValue)/2;
+    const myEngine = Comunica.newEngine();
+    const query = `SELECT ?ratingValue {
+      ?action ?p <${animeURL}>;
+        <http://schema.org/review> ?review.
+      ?review <http://schema.org/starRating> ?rating.
+      ?rating <http://schema.org/ratingValue> ?ratingValue.
+    }`;
 
-    if (isNaN(result)) {
-      result = null;
-    }
+    myEngine.query(query,
+      { sources: [ { type: 'rdfjsSource', value: source } ] })
+      .then(function (result) {
+        result.bindingsStream.on('data', function (data) {
+          // Each data object contains a mapping from variables to RDFJS terms.
+          console.log(data.get('?ratingValue'));
+          let result = parseInt(data.get('?ratingValue').value)/2;
 
-    deferred.resolve(result);
+          if (isNaN(result)) {
+            result = null;
+          }
+
+          deferred.resolve(result);
+        });
+      });
+
+  });
+
+  return deferred.promise;
+}
+
+function getRatingURLForAnime(animeURL) {
+  const deferred = Q.defer();
+
+  getUserDataInStore().then(store => {
+    const source = {
+      match: function(s, p, o, g) {
+        return streamifyArray(store.getQuads(s, p, o, g));
+      }
+    };
+
+    const myEngine = Comunica.newEngine();
+    const query = `SELECT ?rating {
+      ?action ?p <${animeURL}>;
+        <http://schema.org/review> ?review.
+      ?review <http://schema.org/starRating> ?rating.
+    }`;
+
+    myEngine.query(query,
+      { sources: [ { type: 'rdfjsSource', value: source } ] })
+      .then(function (result) {
+        result.bindingsStream.on('data', function (data) {
+          deferred.resolve(data.get('?rating'));
+        });
+      });
 
   });
 
