@@ -1,0 +1,34 @@
+{
+  "name": "solid-anime-tracker",
+  "version": "0.0.1",
+  "description": "The library used by the Solid anime tracker web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pheyvaer/solid-anime-tracker.git"
+  },
+  "author": "Pieter Heyvaert <pheyvaer.heyvaert@ugent.be>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pheyvaer/solid-anime-tracker/issues"
+  },
+  "homepage": "https://github.com/pheyvaer/solid-anime-tracker#readme",
+  "dependencies": {
+    "@comunica/actor-init-sparql": "^1.4.1",
+    "@comunica/actor-init-sparql-rdfjs": "^1.4.1",
+    "ldfetch": "^1.1.1-alpha",
+    "n3": "^1.0.0-beta.2",
+    "prefix-ns": "^0.1.2",
+    "q": "^1.5.1",
+    "solid-auth-client": "^2.2.8",
+    "streamify-array": "^1.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  }
+}

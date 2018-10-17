@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Solid Anime Tracker</title>
+</head>
+<body>
+    <button id="login-btn" type="button">Login</button>
+    <button id="logout-btn" type="button">Logout</button>
+    <button id="get-pub-btn" type="button">Get public</button>
+    <button id="get-inbox-btn" type="button">Get inbox</button>
+    <button id="put-btn" type="button">Put sth</button>
+    <input type="file" id="files" name="files[]" multiple /> <br />
+    <button id="flex-btn" type="button">Flex it</button>
+</body>
+
+<script src="https://solid.community/common/js/solid-auth-client.bundle.js"></script>
+<script src="../js/solid-query-ldflex.bundle.js"></script>
+<script>
+  const urlPod = 'https://ph_test.solid.community/';
+
+  async function login(idp) {
+    //currenSession of trackSession on page load
+    const session = await solid.auth.currentSession();
+    if (!session)
+      await solid.auth.login(idp);
+    else
+      alert(`Logged in as ${session.webId}`);
+  }
+
+  document.getElementById('login-btn').addEventListener('click', function(e) {
+    login(urlPod);
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', function(e) {
+      solid.auth.logout()
+        .then(() => alert('Goodbye!'));
+  });
+
+  document.getElementById('get-pub-btn').addEventListener('click', function(e) {
+    solid.auth.fetch(urlPod + 'public/')
+      .then(res => res.text())
+      .then(body => console.log(body));
+  });
+
+  document.getElementById('get-inbox-btn').addEventListener('click', function(e) {
+    solid.auth.fetch(urlPod + 'inbox/')
+      .then(res => res.text())
+      .then(body => console.log(body));
+  });
+
+  document.getElementById('flex-btn').addEventListener('click', async function(e) {
+    //const user = solid.data.user;
+    //alert(`Welcome, ${await user.name} !`);
+  });
+
+  document.getElementById('put-btn').addEventListener('click', function(e) {
+    if (contents) {
+      solid.auth.fetch(urlPod + 'public/data.ttl', {
+        method: 'PUT',
+        body: contents
+      })
+        .then(res => res.text())
+        .then(body => {
+          console.log(body);
+        });
+    } else {
+      console.error('first select a file');
+    }
+  });
+
+  let contents;
+
+  function handleFileSelect(evt) {
+    const files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+
+    var r = new FileReader();
+    r.onload = function(e) {
+      contents = e.target.result;
+    };
+
+    // Read in the image file as a data URL.
+    r.readAsText(files[0]);
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+</script>
+
+</html>
