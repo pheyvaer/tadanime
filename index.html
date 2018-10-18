@@ -13,24 +13,30 @@
 <body>
 
     <div class="container">
-        <div class="row">
-            <nav class="navbar navbar-expand-sm bg-light">
-
-                <!-- Links -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+            <a class="navbar-brand abs" href="#">App name</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse" id="collapsingNavbar">
                 <ul class="navbar-nav">
+                    <form class="navbar-form" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </ul>
+                <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <button id="login-btn" type="button" class="btn btn-danger navbar-btn">Login</button>
-                    </li>
-                    <li class="nav-item">
-                        <button id="logout-btn" type="button" class="btn btn-danger navbar-btn">Logout</button>
+                        <button id="login-btn" type="button" class="btn navbar-btn">Login</button>
+                        <button id="logout-btn" type="button" class="btn navbar-btn">Logout</button>
                     </li>
                 </ul>
-
-            </nav>
-        </div>
+            </div>
+        </nav>
 
         <hr />
 
