@@ -56,7 +56,7 @@
 
   document.getElementById('put-btn').addEventListener('click', function(e) {
     if (contents) {
-      solid.auth.fetch(urlPod + 'public/data.ttl', {
+      solid.auth.fetch(urlPod + 'inbox/apps/data.ttl', {
         method: 'PUT',
         body: contents
       })

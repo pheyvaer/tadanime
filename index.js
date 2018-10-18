@@ -39,13 +39,18 @@ auth.trackSession(async session => {
     const animeURLs = user.getAllAnimeURLs();
 
     animeURLs.forEach(async a => {
-      const result = await fetcher.getDetailsOfAnime(a);
-      const id = counter;
-      counter ++;
+      if (animeUrls.indexOf(a) === -1) {
+        const result = await fetcher.getDetailsOfAnime(a);
+        const id = counter;
+        counter++;
 
-      anime[id] = result;
-      animeUrls.push(result.url);
-      addAnimeToPage(result, id);
+        anime[id] = result;
+        animeUrls.push(result.url);
+        addAnimeToPage(result, id);
+      } else {
+        console.info(`The anime with iri ${a} is already displayed => not added`);
+        //TODO update rating if any
+      }
     })
   } else {
     $('#logout-btn').hide();
@@ -106,35 +111,68 @@ async function addAnimeToPage(a, id) {
       ratingStr = '';
 
       for (let i = 1; i <= rating; i++) {
-        ratingStr += '⭐️';
+        ratingStr += '<i class="fas fa-star"></i>';
       }
 
       for (let i = rating; i < 5; i++) {
-        ratingStr += '⚫';
+        ratingStr += '<i class="far fa-star"></i>';
       }
     }
   }
 
   const $cardFooter = $(`<div class="card-footer"></div>`);
-  const $footerText = $(`<small class="text-muted">${ratingStr}</small>`);
+  const $footerText = $(`<small class="text-muted"><form class="rating">
+  <label>
+    <input type="radio" name="stars" value="1" />
+    <i class="fas fa-star"></i>
+  </label>
+  <label>
+    <input type="radio" name="stars" value="2" />
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+  </label>
+  <label>
+    <input type="radio" name="stars" value="3" />
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i> 
+  </label>
+  <label>
+    <input type="radio" name="stars" value="4" />
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+  </label>
+  <label>
+    <input type="radio" name="stars" value="5" />
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+  </label>
+</form></small>`);
   $cardFooter.append($footerText);
   $card.append($cardFooter);
 
-  if (!openCardGroup) {
-    //TODO better id for group
-    const $cardGroup = $(`<div id="group-${id}" class="row card-group"></div>`);
-    $cardGroup.append($card);
-    $(`#all-anime`).append($cardGroup);
-    openCardGroup = {el: $cardGroup, length: 1};
-  } else {
-    openCardGroup.el.append($card);
+  $(`#all-anime`).append($card);
 
-    if (openCardGroup.length === 2) {
-      openCardGroup = null;
-    } else {
-      openCardGroup.length ++;
-    }
-  }
+  // if (!openCardGroup) {
+  //   //TODO better id for group
+  //   const $cardGroup = $(`<div id="group-${id}" class="row card-group"></div>`);
+  //   $cardGroup.append($card);
+  //   $(`#all-anime`).append($cardGroup);
+  //   openCardGroup = {el: $cardGroup, length: 1};
+  // } else {
+  //   openCardGroup.el.append($card);
+  //
+  //   if (openCardGroup.length === 2) {
+  //     openCardGroup = null;
+  //   } else {
+  //     openCardGroup.length ++;
+  //   }
+  // }
 }
 
 function truncateDescription(description, maxLength = 200) {
