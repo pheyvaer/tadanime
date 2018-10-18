@@ -7,9 +7,9 @@
 .rating {
     display: inline-block;
     position: relative;
-    height: 50px;
-    line-height: 50px;
-    font-size: 50px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 20px;
 }
 
 .rating label {
@@ -57,15 +57,15 @@
 }
 
 .rating label:last-child i {
-    color: #000;
+    color: lightgrey;
 }
 
 .rating:not(:hover) label input:checked ~ i,
 .rating:hover label:hover input ~ i {
-    color: #09f;
+    color: gold;
 }
 
 .rating label input:focus:not(:checked) ~ i:last-child {
-    color: #000;
-    text-shadow: 0 0 5px #09f;
+    color: lightgrey;
+    text-shadow: 0 0 5px gold;
 }

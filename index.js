@@ -103,56 +103,37 @@ async function addAnimeToPage(a, id) {
   $card.append($cardBody);
 
   let ratingStr = 'no rating';
+  let rating = null;
 
   if (user) {
-    const rating = await user.getRatingForAnime(a.url);
-
-    if (rating) {
-      ratingStr = '';
-
-      for (let i = 1; i <= rating; i++) {
-        ratingStr += '<i class="fas fa-star"></i>';
-      }
-
-      for (let i = rating; i < 5; i++) {
-        ratingStr += '<i class="far fa-star"></i>';
-      }
-    }
+    rating = await user.getRatingForAnime(a.url);
   }
 
   const $cardFooter = $(`<div class="card-footer"></div>`);
-  const $footerText = $(`<small class="text-muted"><form class="rating">
-  <label>
-    <input type="radio" name="stars" value="1" />
-    <i class="fas fa-star"></i>
-  </label>
-  <label>
-    <input type="radio" name="stars" value="2" />
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-  </label>
-  <label>
-    <input type="radio" name="stars" value="3" />
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i> 
-  </label>
-  <label>
-    <input type="radio" name="stars" value="4" />
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-  </label>
-  <label>
-    <input type="radio" name="stars" value="5" />
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-  </label>
-</form></small>`);
+  const $footerText = $(`<div></div>`);
+  const $form = $(`<form class="rating"></form>`);
+
+  for (let i = 1; i <= 5; i ++) {
+    const $label = $('<label></label>');
+    let input = `<input type="radio" name="stars" value="${i}"`;
+
+    if (i === rating) {
+      input += ` checked`;
+    }
+
+    input += ' />';
+    const $input = $(input);
+    $label.append($input);
+
+    for (let j = 1; j <= i; j ++) {
+      $label.append($(`<i class="fas fa-star"></i>`));
+    }
+
+    $form.append($label);
+  }
+
+  $footerText.append($form);
+
   $cardFooter.append($footerText);
   $card.append($cardFooter);
 
