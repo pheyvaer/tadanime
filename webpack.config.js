@@ -6,5 +6,12 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist')
   },
-  mode: 'development'
+  mode: 'development',
+  externals: {
+    'node-fetch': 'fetch',
+    'text-encoding': 'TextEncoder',
+    'whatwg-url': 'window',
+    'isomorphic-fetch': 'fetch',
+    '@trust/webcrypto': 'crypto'
+  }
 };

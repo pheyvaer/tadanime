@@ -6,6 +6,7 @@
 const auth = require('solid-auth-client');
 const User = require('./lib/user');
 const Fetcher = require('./lib/fetcher');
+const saveRatingOfAnime = require('./lib/updater').saveRatingOfAnime;
 
 const fetcher = new Fetcher();
 const podURL = 'https://ph_test.solid.community';
@@ -14,8 +15,6 @@ let user = null;
 let counter = 0;
 const anime = {};
 const animeUrls = [];
-const tbody = $('#anime-table-body');
-let currentAnimeID;
 const ratingsMap = {
   'rating-no': null,
   'rating-1': 1,
@@ -24,8 +23,6 @@ const ratingsMap = {
   'rating-4': 4,
   'rating-5': 5
 };
-
-let openCardGroup = null;
 
 auth.trackSession(async session => {
   const loggedIn = !!session;
@@ -53,6 +50,8 @@ auth.trackSession(async session => {
       }
     })
   } else {
+    $('#tpf-alert').removeClass('hide');
+    $('#tpf-alert').addClass('show');
     $('#logout-btn').hide();
     $('#login-btn').show();
     user = null;
@@ -102,7 +101,6 @@ async function addAnimeToPage(a, id) {
   $cardBody.append($text);
   $card.append($cardBody);
 
-  let ratingStr = 'no rating';
   let rating = null;
 
   if (user) {
@@ -123,6 +121,14 @@ async function addAnimeToPage(a, id) {
 
     input += ' />';
     const $input = $(input);
+
+    $input.change(async (e) => {
+      const rating = $(e.currentTarget).val();
+
+      saveRatingOfAnime(a.url, dataURL, rating, await user.getRatingURLForAnime(a.url));
+      console.log(a.url + ' ' + rating);
+    });
+
     $label.append($input);
 
     for (let j = 1; j <= i; j ++) {
