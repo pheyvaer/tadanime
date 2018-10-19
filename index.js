@@ -29,9 +29,9 @@ auth.trackSession(async session => {
     }, 10000);
 
     $('#login-btn').hide();
-    $('#logout-btn').show();
+    $('#user-menu').show();
     user = new User(await fetcher.getUserDataInStore(dataURL));
-    addAnimeToPage(await fetcher.getDetailsOfAnime('https://betweenourworlds.org/anime/gochuumon-wa-usagi-desu-ka'), 2);
+    // addAnimeToPage(await fetcher.getDetailsOfAnime('https://betweenourworlds.org/anime/gochuumon-wa-usagi-desu-ka'), 2);
     const animeURLs = user.getAllAnimeURLs();
 
     animeURLs.forEach(async a => {
@@ -48,52 +48,82 @@ auth.trackSession(async session => {
         //TODO update rating if any
       }
     });
-  } else if (!randomAnimeLoaded) {
+  } else {
     $('#tpf-alert').removeClass('hide hidden').addClass('show');
 
     setTimeout(() => {
       $('#tpf-alert').removeClass('show').addClass('hide hidden');
     }, 10000);
 
-    $('#logout-btn').hide();
+    $('#user-menu').hide();
     $('#login-btn').show();
+
+    if (!randomAnimeLoaded && !user) {
+      fetcher.getRandomAnime(12, result => {
+        const id = counter;
+        counter++;
+
+        anime[id] = result;
+        animeUrls.push(result.url);
+        addAnimeToPage(result, id);
+      });
+
+      randomAnimeLoaded = true;
+    }
+
     user = null;
-
-    fetcher.getRandomAnime(12, result => {
-      const id = counter;
-      counter ++;
-
-      anime[id] = result;
-      animeUrls.push(result.url);
-      addAnimeToPage(result, id);
-    });
-
-    randomAnimeLoaded = true;
   }
 });
 
-$('#login-btn').click(() => {
-  auth.popupLogin({ popupUri: 'popup.html' })
-  $('#login-btn').hide();
-  $('#logout-btn').show();
+$('.login-btn').click(() => {
+  auth.popupLogin({ popupUri: 'popup.html' });
+  // $('#login-btn').hide();
+  // $('#logout-btn').show();
+  $('#notloggedin-modal').modal('hide');
 });
 
 $('#logout-btn').click(() => {
   auth.logout();
-  $('#logout-btn').hide();
-  $('#login-btn').show();
+  // $('#logout-btn').hide();
+  // $('#login-btn').show();
+});
+
+$('#srch-btn').click(() => {
+  const value = $('#srch-term').val();
+
+  if (value !== undefined) {
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      if (animeUrls.indexOf(value) === -1) {
+        //fetch data
+        //todo
+        console.log(value);
+      } else {
+        //show as only one in the list
+        //todo
+      }
+    } else {
+      //todo do elastic search
+    }
+  }
+});
+
+$('#srch-term').keypress(function (e) {
+  const key = e.which;
+
+  if(key === 13){
+    $('#srch-btn').click();
+    return false;
+  }
 });
 
 async function addAnimeToPage(a, id) {
   const $card = $(`<div class="card"></div>`);
   let imgSrc = a.image;
 
-  if (!imgSrc) {
-    imgSrc = './img/placeholder.svg';
+  if (imgSrc) {
+    const $img = $(`<img class="card-img-top" src="${imgSrc}" alt="image of ${a.title}">`);
+    $card.append($img);
   }
-
-  const $img = $(`<img class="card-img-top" src="${imgSrc}" alt="image of ${a.title}">`);
-  $card.append($img);
 
   const $cardBody = $(`<div class="card-body"></div>`);
   const $title = $(`<h5 class="card-title">${a.title}</h5>`);
@@ -124,10 +154,15 @@ async function addAnimeToPage(a, id) {
     const $input = $(input);
 
     $input.change(async (e) => {
-      const rating = $(e.currentTarget).val();
+      if (user) {
+        const rating = $(e.currentTarget).val();
 
-      saveRatingOfAnime(a.url, dataURL, rating, await user.getRatingURLForAnime(a.url));
-      console.log(a.url + ' ' + rating);
+        saveRatingOfAnime(a.url, dataURL, rating, await user.getRatingURLForAnime(a.url));
+        console.log(a.url + ' ' + rating);
+      } else {
+        $(e.currentTarget).prop('checked', false);
+        $('#notloggedin-modal').modal();
+      }
     });
 
     $label.append($input);
@@ -145,22 +180,6 @@ async function addAnimeToPage(a, id) {
   $card.append($cardFooter);
 
   $(`#all-anime`).append($card);
-
-  // if (!openCardGroup) {
-  //   //TODO better id for group
-  //   const $cardGroup = $(`<div id="group-${id}" class="row card-group"></div>`);
-  //   $cardGroup.append($card);
-  //   $(`#all-anime`).append($cardGroup);
-  //   openCardGroup = {el: $cardGroup, length: 1};
-  // } else {
-  //   openCardGroup.el.append($card);
-  //
-  //   if (openCardGroup.length === 2) {
-  //     openCardGroup = null;
-  //   } else {
-  //     openCardGroup.length ++;
-  //   }
-  // }
 }
 
 function truncateDescription(description, maxLength = 200) {

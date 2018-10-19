@@ -20,19 +20,29 @@
             </button>
             <div class="navbar-collapse collapse" id="collapsingNavbar">
                 <ul class="navbar-nav">
-                    <form class="navbar-form" role="search">
+                    <!--<form class="navbar-form" role="search">-->
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
                             <div class="input-group-btn">
-                                <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+                                <button id="srch-btn" class="btn btn-default" type="button"><i class="fas fa-search"></i></button>
+                                <button id="clr-srch-btn" class="btn btn-default" type="button"><i class="fas fa-times"></i></button>
                             </div>
                         </div>
-                    </form>
+                    <!--</form>-->
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <button id="login-btn" type="button" class="btn navbar-btn">Login</button>
-                        <button id="logout-btn" type="button" class="btn navbar-btn">Logout</button>
+                        <button id="login-btn" type="button" class="login-btn btn navbar-btn">Login</button>
+                        <!--<button id="logout-btn" type="button" class="btn navbar-btn">Logout</button>-->
+                        <div id="user-menu" class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="far fa-user"></i> User
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <button class="dropdown-item" type="button">See data</button>
+                                <button id="logout-btn" class="dropdown-item" type="button">Log out</button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -55,6 +65,26 @@
         </div>
 
         <div id="all-anime" class="card-columns"></div>
+    </div>
+
+    <div id="notloggedin-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Log in required</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Please log in to save your rating.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="login-btn btn btn-primary">Log in</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
