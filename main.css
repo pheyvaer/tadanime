@@ -69,3 +69,7 @@
     color: lightgrey;
     text-shadow: 0 0 5px gold;
 }
+
+.hidden {
+    display: none;
+}

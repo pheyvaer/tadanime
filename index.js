@@ -15,20 +15,19 @@ let user = null;
 let counter = 0;
 const anime = {};
 const animeUrls = [];
-const ratingsMap = {
-  'rating-no': null,
-  'rating-1': 1,
-  'rating-2': 2,
-  'rating-3': 3,
-  'rating-4': 4,
-  'rating-5': 5
-};
+let randomAnimeLoaded = false;
 
 auth.trackSession(async session => {
   const loggedIn = !!session;
   console.log(`logged in: ${loggedIn}`);
 
   if (loggedIn) {
+    $('#pod-alert').removeClass('hide hidden').addClass('show');
+
+    setTimeout(() => {
+      $('#pod-alert').removeClass('show').addClass('hide hidden');
+    }, 10000);
+
     $('#login-btn').hide();
     $('#logout-btn').show();
     user = new User(await fetcher.getUserDataInStore(dataURL));
@@ -48,17 +47,19 @@ auth.trackSession(async session => {
         console.info(`The anime with iri ${a} is already displayed => not added`);
         //TODO update rating if any
       }
-    })
-  } else {
-    $('#tpf-alert').removeClass('hide');
-    $('#tpf-alert').addClass('show');
+    });
+  } else if (!randomAnimeLoaded) {
+    $('#tpf-alert').removeClass('hide hidden').addClass('show');
+
+    setTimeout(() => {
+      $('#tpf-alert').removeClass('show').addClass('hide hidden');
+    }, 10000);
+
     $('#logout-btn').hide();
     $('#login-btn').show();
     user = null;
 
-    const anime = await fetcher.getRandomAnime(12);
-
-    anime.forEach(result => {
+    fetcher.getRandomAnime(12, result => {
       const id = counter;
       counter ++;
 
@@ -66,6 +67,8 @@ auth.trackSession(async session => {
       animeUrls.push(result.url);
       addAnimeToPage(result, id);
     });
+
+    randomAnimeLoaded = true;
   }
 });
 
@@ -80,8 +83,6 @@ $('#logout-btn').click(() => {
   $('#logout-btn').hide();
   $('#login-btn').show();
 });
-
-// $("input[name='optradio']").click(saveRatingOfCurrentAnime);
 
 async function addAnimeToPage(a, id) {
   const $card = $(`<div class="card"></div>`);
