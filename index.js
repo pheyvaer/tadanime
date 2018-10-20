@@ -9,8 +9,6 @@ const Fetcher = require('./lib/fetcher');
 const saveRatingOfAnime = require('./lib/updater').saveRatingOfAnime;
 
 const fetcher = new Fetcher();
-const podURL = 'https://ph_test.solid.community';
-const dataURL = podURL + '/public/data.ttl';
 let user = null;
 let counter = 0;
 const anime = {};
@@ -26,39 +24,26 @@ auth.trackSession(async session => {
 
     setTimeout(() => {
       $('#pod-alert').removeClass('show').addClass('hide hidden');
-    }, 10000);
+    }, 60000);
 
     $('#login-btn').hide();
     $('#user-menu').show();
-    user = new User(await fetcher.getUserDataInStore(dataURL));
-    // addAnimeToPage(await fetcher.getDetailsOfAnime('https://betweenourworlds.org/anime/gochuumon-wa-usagi-desu-ka'), 2);
-    const animeURLs = user.getAllAnimeURLs();
 
-    animeURLs.forEach(async a => {
-      if (animeUrls.indexOf(a) === -1) {
-        const result = await fetcher.getDetailsOfAnime(a);
-        const id = counter;
-        counter++;
+    user = new User(session.webId);
 
-        anime[id] = result;
-        animeUrls.push(result.url);
-        addAnimeToPage(result, id);
-      } else {
-        console.info(`The anime with iri ${a} is already displayed => not added`);
-        //TODO update rating if any
-      }
-    });
+    $('#dataurl').val(user.getPodURL());
+    $('#dataurl-modal').modal();
   } else {
-    $('#tpf-alert').removeClass('hide hidden').addClass('show');
-
-    setTimeout(() => {
-      $('#tpf-alert').removeClass('show').addClass('hide hidden');
-    }, 10000);
-
     $('#user-menu').hide();
     $('#login-btn').show();
 
     if (!randomAnimeLoaded && !user) {
+      $('#tpf-alert').removeClass('hide hidden').addClass('show');
+
+      setTimeout(() => {
+        $('#tpf-alert').removeClass('show').addClass('hide hidden');
+      }, 10000);
+
       fetcher.getRandomAnime(12, result => {
         const id = counter;
         counter++;
@@ -86,6 +71,22 @@ $('#logout-btn').click(() => {
   auth.logout();
   // $('#logout-btn').hide();
   // $('#login-btn').show();
+});
+
+$('#save-dataurl-btn').click(() => {
+  user.setDataURL($('#dataurl').val());
+  $('#user-solid-pod').prop('href', user.getDataURL());
+  $('#dataurl-modal').modal('hide');
+  loadUserAnime();
+});
+
+$('#dataurl').keypress(function (e) {
+  const key = e.which;
+
+  if(key === 13){
+    $('#save-dataurl-btn').click();
+    return false;
+  }
 });
 
 $('#srch-btn').click(() => {
@@ -116,6 +117,38 @@ $('#srch-term').keypress(function (e) {
   }
 });
 
+async function loadUserAnime() {
+  user.setStore(await fetcher.getUserDataInStore(user.getDataURL()));
+  // addAnimeToPage(await fetcher.getDetailsOfAnime('https://betweenourworlds.org/anime/gochuumon-wa-usagi-desu-ka'), 2);
+  const animeURLs = user.getAllAnimeURLs();
+
+  animeURLs.forEach(async a => {
+    if (animeUrls.indexOf(a) === -1) {
+      const result = await fetcher.getDetailsOfAnime(a);
+      const id = counter;
+      counter++;
+
+      anime[id] = result;
+      animeUrls.push(result.url);
+      addAnimeToPage(result, id);
+    } else {
+      console.info(`The anime with iri ${a} is already displayed => not added`);
+      let i = 0;
+      let ids = Object.keys(anime);
+
+      while (i < ids.length && anime[ids[i]].url !== a) {
+        i ++;
+      }
+
+      let rating = await user.getRatingForAnime(a);
+
+      if (rating) {
+        $(`#${ids[i]}-rating-${rating}`).prop('checked', true);
+      }
+    }
+  });
+}
+
 async function addAnimeToPage(a, id) {
   const $card = $(`<div class="card"></div>`);
   let imgSrc = a.image;
@@ -144,7 +177,7 @@ async function addAnimeToPage(a, id) {
 
   for (let i = 1; i <= 5; i ++) {
     const $label = $('<label></label>');
-    let input = `<input type="radio" name="stars" value="${i}"`;
+    let input = `<input id="${id}-rating-${i}" type="radio" name="stars" value="${i}"`;
 
     if (i === rating) {
       input += ` checked`;
@@ -157,7 +190,7 @@ async function addAnimeToPage(a, id) {
       if (user) {
         const rating = $(e.currentTarget).val();
 
-        saveRatingOfAnime(a.url, dataURL, rating, await user.getRatingURLForAnime(a.url));
+        saveRatingOfAnime(a.url, user.getDataURL(), rating, await user.getRatingURLForAnime(a.url), user.getWebID());
         console.log(a.url + ' ' + rating);
       } else {
         $(e.currentTarget).prop('checked', false);

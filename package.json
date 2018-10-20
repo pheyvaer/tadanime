@@ -25,7 +25,8 @@
     "prefix-ns": "^0.1.2",
     "q": "^1.5.1",
     "solid-auth-client": "^2.2.8",
-    "streamify-array": "^1.0.1"
+    "streamify-array": "^1.0.1",
+    "uniqid": "^5.0.3"
   },
   "devDependencies": {
     "webpack": "^4.20.2",

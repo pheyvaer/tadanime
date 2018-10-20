@@ -58,7 +58,7 @@
         </div>
 
         <div id="pod-alert" class="alert alert-warning alert-dismissible fade hide hidden" role="alert">
-            The data is loaded from your <a href="https://solid.inrupt.com/get-a-solid-pod" target="_blank">Solid POD</a> and combined with data retrieved by crawling the Web.
+            The data is loaded from your <a id="user-solid-pod" href="#" target="_blank">Solid POD</a> and combined with data retrieved by crawling the Web.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -82,6 +82,27 @@
                 <div class="modal-footer">
                     <button type="button" class="login-btn btn btn-primary">Log in</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dataurl-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Where is your data stored?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Please provide the path of where your data is or will be stored on your POD.</p>
+                    <input type="text" class="form-control" placeholder="path" id="dataurl">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="save-dataurl-btn" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
