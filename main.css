@@ -73,3 +73,44 @@
 .hidden {
     display: none;
 }
+
+.navbar {
+    background-color: #5DB7DE;
+    margin-bottom: 10px;
+}
+
+.navbar .btn {
+    background-color: transparent;
+    color: white;
+}
+
+.navbar .btn:hover {
+    color: lightgrey;
+}
+
+#login-btn {
+    font-weight: bold;
+}
+
+#srch-term {
+    border-radius: 5px;
+}
+
+.navbar-brand {
+    color: white;
+    font-weight: bold;
+}
+
+#dropdownMenu2 {
+    border: none;
+}
+
+#dropdownMenu2:focus, #dropdownMenu2:hover {
+    border: none;
+    color: lightgrey;
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    color: white;
+}

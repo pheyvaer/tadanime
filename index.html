@@ -13,10 +13,10 @@
 <body>
 
     <div class="container">
-        <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-            <a class="navbar-brand abs" href="#">Tadanime</a>
+        <nav class="navbar navbar-expand-md">
+            <span class="navbar-brand abs">Tadanime</span>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
-                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
             </button>
             <div class="navbar-collapse collapse" id="collapsingNavbar">
                 <ul class="navbar-nav">
@@ -36,7 +36,7 @@
                         <!--<button id="logout-btn" type="button" class="btn navbar-btn">Logout</button>-->
                         <div id="user-menu" class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="far fa-user"></i> User
+                                <i class="far fa-user"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                 <button id="see-data-btn" class="dropdown-item" type="button">See data</button>
@@ -47,8 +47,6 @@
                 </ul>
             </div>
         </nav>
-
-        <hr />
 
         <div id="tpf-alert" class="alert alert-warning alert-dismissible fade hide hidden" role="alert">
             The data is loaded from a <a href="https://betweenourworlds.org" target="_blank">Linked Open Dataset</a> via a <a href="http://linkeddatafragments.org/" target="_blank">TPF endpoint</a>.
