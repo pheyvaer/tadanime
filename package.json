@@ -20,6 +20,7 @@
   "dependencies": {
     "@comunica/actor-init-sparql": "^1.4.1",
     "@comunica/actor-init-sparql-rdfjs": "^1.4.1",
+    "elasticlunr": "^0.9.5",
     "ldfetch": "^1.1.1-alpha",
     "n3": "^1.0.0-beta.2",
     "prefix-ns": "^0.1.2",
