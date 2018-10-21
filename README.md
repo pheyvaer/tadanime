@@ -7,6 +7,8 @@ Thus, no server-side logic is required for the application
 as both the information about the anime and the personal information of the user
 is stored on different servers.
 
+Check the live version [here](https://pheyvaer.github.io/tadanime/index.html).
+
 ## What you can do
 
 - login with your Solid POD
