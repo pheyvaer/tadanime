@@ -88,7 +88,7 @@ $('#see-data-btn').click(() => {
   window.open(user.getDataURL(), '_blank');
 });
 
-$('#srch-btn').click(() => {
+$('#srch-btn').click(async function() {
   const value = $('#srch-term').val();
 
   if (value !== undefined) {
@@ -97,6 +97,13 @@ $('#srch-btn').click(() => {
         //fetch data
         //todo
         console.log(value);
+        const result = await fetcher.getDetailsOfAnime(value);
+        const id = counter;
+        counter++;
+
+        anime[id] = result;
+        animeUrls.push(result.url);
+        addAnimeToPage(result, id);
       } else {
         //show as only one in the list
         //todo
