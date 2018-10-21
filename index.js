@@ -20,12 +20,6 @@ auth.trackSession(async session => {
   console.log(`logged in: ${loggedIn}`);
 
   if (loggedIn) {
-    $('#pod-alert').removeClass('hide hidden').addClass('show');
-
-    setTimeout(() => {
-      $('#pod-alert').removeClass('show').addClass('hide hidden');
-    }, 60000);
-
     $('#login-btn').hide();
     $('#user-menu').show();
 
@@ -77,6 +71,7 @@ $('#save-dataurl-btn').click(() => {
   user.setDataURL($('#dataurl').val());
   $('#user-solid-pod').prop('href', user.getDataURL());
   $('#dataurl-modal').modal('hide');
+  $('#dataurl-modal .modal-body p:first-child').addClass('hidden');
   loadUserAnime();
 });
 
@@ -118,35 +113,47 @@ $('#srch-term').keypress(function (e) {
 });
 
 async function loadUserAnime() {
-  user.setStore(await fetcher.getUserDataInStore(user.getDataURL()));
-  // addAnimeToPage(await fetcher.getDetailsOfAnime('https://betweenourworlds.org/anime/gochuumon-wa-usagi-desu-ka'), 2);
-  const animeURLs = user.getAllAnimeURLs();
+  try {
+    user.setStore(await fetcher.getUserDataInStore(user.getDataURL()));
+    // addAnimeToPage(await fetcher.getDetailsOfAnime('https://betweenourworlds.org/anime/gochuumon-wa-usagi-desu-ka'), 2);
 
-  animeURLs.forEach(async a => {
-    if (animeUrls.indexOf(a) === -1) {
-      const result = await fetcher.getDetailsOfAnime(a);
-      const id = counter;
-      counter++;
+    $('#pod-alert').removeClass('hide hidden').addClass('show');
 
-      anime[id] = result;
-      animeUrls.push(result.url);
-      addAnimeToPage(result, id);
-    } else {
-      console.info(`The anime with iri ${a} is already displayed => not added`);
-      let i = 0;
-      let ids = Object.keys(anime);
+    setTimeout(() => {
+      $('#pod-alert').removeClass('show').addClass('hide hidden');
+    }, 60000);
 
-      while (i < ids.length && anime[ids[i]].url !== a) {
-        i ++;
+    const animeURLs = user.getAllAnimeURLs();
+
+    animeURLs.forEach(async a => {
+      if (animeUrls.indexOf(a) === -1) {
+        const result = await fetcher.getDetailsOfAnime(a);
+        const id = counter;
+        counter++;
+
+        anime[id] = result;
+        animeUrls.push(result.url);
+        addAnimeToPage(result, id);
+      } else {
+        console.info(`The anime with iri ${a} is already displayed => not added`);
+        let i = 0;
+        let ids = Object.keys(anime);
+
+        while (i < ids.length && anime[ids[i]].url !== a) {
+          i++;
+        }
+
+        let rating = await user.getRatingForAnime(a);
+
+        if (rating) {
+          $(`#${ids[i]}-rating-${rating}`).prop('checked', true);
+        }
       }
-
-      let rating = await user.getRatingForAnime(a);
-
-      if (rating) {
-        $(`#${ids[i]}-rating-${rating}`).prop('checked', true);
-      }
-    }
-  });
+    });
+  } catch (e) {
+    $('#dataurl-modal .modal-body p:first-child').removeClass('hidden');
+    $('#dataurl-modal').modal();
+  }
 }
 
 async function addAnimeToPage(a, id) {
