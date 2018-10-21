@@ -84,6 +84,10 @@ $('#dataurl').keypress(function (e) {
   }
 });
 
+$('#see-data-btn').click(() => {
+  window.open(user.getDataURL(), '_blank');
+});
+
 $('#srch-btn').click(() => {
   const value = $('#srch-term').val();
 
