@@ -1,5 +1,5 @@
 {
-  "name": "solid-anime-tracker",
+  "name": "tadanime",
   "version": "0.0.1",
   "description": "The library used by the Solid anime tracker web app",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pheyvaer/solid-anime-tracker.git"
+    "url": "git+https://github.com/pheyvaer/tadanime.git"
   },
   "author": "Pieter Heyvaert <pheyvaer.heyvaert@ugent.be>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pheyvaer/solid-anime-tracker/issues"
+    "url": "https://github.com/pheyvaer/tadanime/issues"
   },
-  "homepage": "https://github.com/pheyvaer/solid-anime-tracker#readme",
+  "homepage": "https://github.com/pheyvaer/tadanime#readme",
   "dependencies": {
     "@comunica/actor-init-sparql": "^1.4.1",
     "@comunica/actor-init-sparql-rdfjs": "^1.4.1",
