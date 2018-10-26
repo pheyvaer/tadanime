@@ -1,6 +1,6 @@
 {
   "name": "tadanime",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The library used by the Solid anime tracker web app",
   "main": "index.js",
   "scripts": {
