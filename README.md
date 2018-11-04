@@ -21,9 +21,9 @@ Check the [live version](https://pheyvaer.github.io/tadanime/index.html) or the 
 ## Used technologies/concepts
 
 - [Linked Open Data](https://www.w3.org/DesignIssues/LinkedData.html): get details of anime ([Between Our Worlds](https://betweenourworlds.org))
-- Decentralization: information is fetched from different servers
+- [Decentralization](https://en.wikipedia.org/wiki/Decentralization#Information_technology): information is fetched from different servers
 - [Solid PODs](https://solid.inrupt.com/get-a-solid-pod): get user's rating of anime
-- [SPARQL](): query/update user's ratings
+- [SPARQL](https://www.w3.org/TR/2013/REC-sparql11-overview-20130321/): query/update user's ratings
 - [RDF](https://www.w3.org/TR/rdf11-concepts/): representation of the data
 - [Triple Pattern Fragments](http://linkeddatafragments.org/concept/): Between Our Worlds offers a TPF endpoint
 - [Comunica](https://github.com/comunica/): querying different data sources
